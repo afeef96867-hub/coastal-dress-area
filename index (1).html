@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Aura — Mangalore Heritage Clothing</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Serif+Display:ital@0;1&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* === VARIABLES & RESET === */
+:root {
+  --ocean-deep: #071e2c;
+  --ocean-mid: #0f3a52;
+  --ocean-light: #1a6b8a;
+  --sand-warm: #c4654a;
+  --sand-light: #e8d5b7;
+  --coral: #c4654a;
+  --cream: #f5efe6;
+  --teal-accent: #2ec4b6;
+  --gold-accent: #d4a853;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ocean-mid) var(--ocean-deep);
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ocean-deep);
+  color: var(--sand-light);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+::selection {
+  background: var(--sand-warm);
+  color: var(--ocean-deep);
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* === SCROLL PROGRESS === */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--sand-warm), var(--gold-accent), var(--teal-accent));
+  width: 0%; z-index: 9999; transition: width .1s linear;
+}
+
+/* === INTRO CINEMATIC === */
+.intro-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 10000; overflow: hidden;
+  transition: opacity 1s ease;
+}
+.intro-overlay.fade-out { opacity: 0; pointer-events: none; }
+
+/* Animated background */
+.intro-bg {
+  position: absolute; width: 100%; height: 100%;
+  transition: background 1.2s ease, filter 1.2s ease;
+  background: var(--ocean-deep);
+}
+.intro-bg::after {
+  content: ''; position: absolute; width: 100%; height: 100%;
+  background: radial-gradient(ellipse at 50% 60%, rgba(0,0,0,0) 30%, rgba(0,0,0,.4) 100%);
+}
+
+/* ---- Phase 1: Big centered brand ---- */
+.intro-hero-brand {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  text-align: center; z-index: 20;
+  transition: all 1.2s cubic-bezier(.23,1,.32,1);
+}
+.intro-hero-brand.zoom-out {
+  top: clamp(28px, 4.5vh, 55px);
+  transform: translate(-50%, 0) scale(.45);
+  opacity: .6;
+}
+.intro-hero-brand__name {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(3rem, 9vw, 7rem);
+  color: var(--cream); line-height: 1;
+  opacity: 0; transform: scale(.6);
+  transition: all 1s cubic-bezier(.16,1,.3,1);
+}
+.intro-hero-brand__name.visible {
+  opacity: 1; transform: scale(1);
+}
+.intro-hero-brand__name em {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 300;
+  color: var(--sand-warm);
+  font-size: .75em;
+  margin-top: .1em;
+}
+.intro-hero-brand__sub {
+  font-size: clamp(.65rem, 1.2vw, .85rem);
+  letter-spacing: .35em; text-transform: uppercase;
+  color: rgba(232,213,183,.35); margin-top: .8rem;
+  opacity: 0; transform: translateY(15px);
+  transition: all .8s .4s ease;
+}
+.intro-hero-brand__sub.visible {
+  opacity: 1; transform: translateY(0);
+}
+/* Decorative line under brand */
+.intro-hero-brand__line {
+  width: 60px; height: 1px; margin: 1rem auto 0;
+  background: linear-gradient(90deg, transparent, var(--sand-warm), transparent);
+  opacity: 0; transition: opacity .8s .6s;
+}
+.intro-hero-brand__line.visible { opacity: .5; }
+
+/* ---- Phase 2: Dress runway ---- */
+.intro-stage {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center;
+  z-index: 5; width: 90%; max-width: 400px;
+  opacity: 0; transition: opacity .6s;
+}
+.intro-stage.visible { opacity: 1; }
+
+/* Dress card */
+.intro-dress {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center;
+  opacity: 0; pointer-events: none;
+  transition: all .9s cubic-bezier(.23,1,.32,1);
+}
+.intro-dress.active { opacity: 1; pointer-events: auto; }
+.intro-dress.exit-up {
+  opacity: 0; transform: translateX(-50%) translateY(-80px) scale(.85);
+}
+.intro-dress.enter-below {
+  opacity: 0; transform: translateX(-50%) translateY(60px) scale(.9);
+}
+
+/* Dress swatch */
+.intro-dress__swatch {
+  width: clamp(200px, 30vw, 300px);
+  height: clamp(280px, 42vw, 420px);
+  border-radius: 16px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);
+  display: flex; align-items: center; justify-content: center;
+}
+.intro-dress__swatch::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+  transform: skewX(-15deg);
+}
+.intro-dress.active .intro-dress__swatch::before {
+  animation: introShimmer 1.5s .4s ease forwards;
+}
+@keyframes introShimmer { 0%{left:-100%} 100%{left:200%} }
+
+.intro-dress__silhouette {
+  position: relative; z-index: 1; opacity: .2;
+  filter: drop-shadow(0 0 40px rgba(255,255,255,.1));
+}
+
+/* Stand */
+.intro-dress__stand {
+  width: 2px; height: 30px;
+  background: linear-gradient(to bottom, rgba(232,213,183,.3), transparent);
+  margin-top: -2px;
+}
+.intro-dress__base {
+  width: 60px; height: 3px; border-radius: 2px;
+  background: rgba(232,213,183,.15);
+}
+
+/* Info below swatch */
+.intro-dress__info {
+  text-align: center; margin-top: 1.5rem;
+  opacity: 0; transform: translateY(15px);
+  transition: all .6s .3s ease;
+}
+.intro-dress.active .intro-dress__info { opacity: 1; transform: translateY(0); }
+.intro-dress__badge {
+  display: inline-block; padding: .2rem .7rem; border-radius: 20px;
+  background: rgba(232,213,183,.08); border: 1px solid rgba(232,213,183,.12);
+  font-size: .55rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--sand-warm); margin-bottom: .6rem;
+}
+.intro-dress__name {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  color: var(--cream); line-height: 1.2;
+}
+.intro-dress__category {
+  font-size: .6rem; letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(232,213,183,.4); margin-top: .3rem;
+}
+.intro-dress__price {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem; font-weight: 500;
+  color: var(--sand-light); margin-top: .5rem;
+  opacity: 0; transition: opacity .5s .5s;
+}
+.intro-dress.active .intro-dress__price { opacity: 1; }
+
+/* Progress bar */
+.intro-progress {
+  position: absolute; bottom: clamp(30px, 5vh, 60px);
+  left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 1rem; z-index: 10;
+  opacity: 0; transition: opacity .5s;
+}
+.intro-progress.visible { opacity: 1; }
+.intro-progress__bar {
+  width: clamp(100px, 20vw, 200px); height: 2px;
+  background: rgba(232,213,183,.1); border-radius: 1px; overflow: hidden;
+}
+.intro-progress__fill {
+  height: 100%; width: 0%;
+  background: var(--sand-warm); transition: width .15s linear;
+}
+.intro-progress__count {
+  font-size: .65rem; letter-spacing: .1em;
+  color: rgba(232,213,183,.3); font-variant-numeric: tabular-nums;
+}
+
+/* Skip */
+.intro-skip {
+  position: absolute; bottom: clamp(30px, 5vh, 60px);
+  right: clamp(20px, 3vw, 40px); z-index: 10;
+  background: none; border: 1px solid rgba(232, 219, 183, 0.12);
+  color: rgba(232,213,183,.3); padding: .4rem 1rem;
+  border-radius: 4px; cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+  transition: all .3s; opacity: 0;
+}
+.intro-skip.visible { opacity: 1; }
+.intro-skip:hover { border-color: var(--sand-warm); color: var(--sand-warm); }
+
+/* Rings */
+.intro-ring {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%; border: 1px solid rgba(232,213,183,.04);
+  pointer-events: none; z-index: 2;
+  transition: transform 1.5s cubic-bezier(.16,1,.3,1), opacity 1s;
+  opacity: 0;
+}
+.intro-ring.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.intro-ring:nth-child(2) { width: 450px; height: 450px; transition-delay: .1s; }
+.intro-ring:nth-child(3) { width: 600px; height: 600px; border-color: rgba(232,213,183,.025); transition-delay: .2s; }
+.intro-ring:nth-child(4) { width: 750px; height: 750px; border-color: rgba(232,213,183,.015); transition-delay: .3s; }
+
+/* === CUSTOM CURSOR === */
+.cursor-dot {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--sand-warm); border-radius: 50%;
+  pointer-events: none; z-index: 99999;
+  transition: transform .1s;
+  transform: translate(-50%, -50%);
+}
+.cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1.5px solid rgba(232,213,183,.3);
+  border-radius: 50%; pointer-events: none; z-index: 99998;
+  transition: width .3s, height .3s, border-color .3s;
+  transform: translate(-50%, -50%);
+}
+.cursor-ring.hover {
+  width: 56px; height: 56px;
+  border-color: var(--sand-warm);
+}
+
+/* === PARTICLES === */
+.particles {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 1;
+}
+.particle {
+  position: absolute; width: 3px; height: 3px;
+  background: rgba(232,213,183,.15); border-radius: 50%;
+  animation: particleFloat linear infinite;
+}
+@keyframes particleFloat {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+/* === NAVBAR === */
+.navbar {
+  position: fixed; top: 0; width: 100%; padding: 1.2rem 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 1000; transition: all .4s;
+  background: transparent;
+}
+.navbar.scrolled {
+  background: rgba(7,30,44,.92);
+  backdrop-filter: blur(20px);
+  padding: .8rem 3rem;
+  box-shadow: 0 4px 30px rgba(0,0,0,.3);
+}
+.navbar__logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem; color: var(--cream);
+  letter-spacing: .05em;
+}
+.navbar__logo span { color: var(--sand-warm); }
+.navbar__links {
+  list-style: none; display: flex; gap: 2.5rem; align-items: center;
+}
+.navbar__links a {
+  font-size: .75rem; font-weight: 400;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: rgba(232,213,183,.6);
+  transition: color .3s; position: relative;
+}
+.navbar__links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 1px; background: var(--sand-warm);
+  transition: width .3s;
+}
+.navbar__links a:hover { color: var(--cream); }
+.navbar__links a:hover::after { width: 100%; }
+.navbar__cart {
+  position: relative; cursor: pointer;
+  font-size: .75rem; letter-spacing: .15em; text-transform: uppercase;
+  color: rgba(232,213,183,.6); transition: color .3s;
+  background: none; border: none; font-family: 'Outfit', sans-serif;
+}
+.navbar__cart:hover { color: var(--cream); }
+.navbar__cart-count {
+  position: absolute; top: -8px; right: -14px;
+  background: var(--sand-warm); color: var(--ocean-deep);
+  width: 18px; height: 18px; border-radius: 50%;
+  font-size: .6rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.navbar__toggle {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; background: none; border: none;
+}
+.navbar__toggle span {
+  width: 24px; height: 1.5px; background: var(--sand-light);
+  transition: all .3s;
+}
+
+/* === HERO === */
+.hero {
+  position: relative; height: 100vh; display: flex;
+  align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.hero__bg {
+  position: absolute; width: 100%; height: 100%;
+  background: linear-gradient(135deg, var(--ocean-deep) 0%, #0c2d3f 40%, #163d52 70%, var(--ocean-deep) 100%);
+}
+.hero__bg::after {
+  content: ''; position: absolute; width: 100%; height: 100%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(196,101,74,.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 30%, rgba(46,196,182,.05) 0%, transparent 50%);
+}
+.hero__content {
+  position: relative; z-index: 2; text-align: center;
+  max-width: 800px; padding: 0 2rem;
+}
+.hero__tagline {
+  font-family: 'Outfit', sans-serif;
+  font-size: .7rem; font-weight: 400;
+  letter-spacing: .3em; text-transform: uppercase;
+  color: var(--sand-warm);
+  margin-bottom: 1.5rem;
+  opacity: 0; transform: translateY(20px);
+  animation: heroReveal .8s .5s forwards;
+}
+.hero__title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  color: var(--cream);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  opacity: 0; transform: translateY(30px);
+  animation: heroReveal .8s .8s forwards;
+}
+.hero__subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  color: rgba(232,213,183,.5);
+  font-style: italic;
+  line-height: 1.6;
+  max-width: 500px; margin: 0 auto 2rem;
+  opacity: 0; transform: translateY(20px);
+  animation: heroReveal .8s 1.1s forwards;
+}
+.hero__cta {
+  display: inline-block; padding: .8rem 2.5rem;
+  border: 1px solid var(--sand-warm);
+  color: var(--sand-warm);
+  font-size: .7rem; font-weight: 500;
+  letter-spacing: .2em; text-transform: uppercase;
+  transition: all .4s;
+  opacity: 0; transform: translateY(20px);
+  animation: heroReveal .8s 1.4s forwards;
+}
+.hero__cta:hover {
+  background: var(--sand-warm);
+  color: var(--ocean-deep);
+}
+@keyframes heroReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero__waves {
+  position: absolute; bottom: 0; width: 100%; z-index: 3;
+}
+.hero__waves svg { display: block; width: 100%; }
+
+/* === CULTURAL INTERLUDES === */
+.interlude {
+  padding: 8rem 2rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.interlude__line {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sand-warm), transparent);
+  margin: 0 auto 2rem;
+}
+.interlude__label {
+  font-size: .65rem; font-weight: 400;
+  letter-spacing: .3em; text-transform: uppercase;
+  color: var(--sand-warm);
+  margin-bottom: 1.5rem;
+}
+.interlude__title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: var(--cream);
+  margin-bottom: 1rem;
+  max-width: 600px; margin-left: auto; margin-right: auto;
+}
+.interlude__text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  color: rgba(232,213,183,.45);
+  font-style: italic;
+  max-width: 550px; margin: 0 auto;
+  line-height: 1.8;
+}
+.interlude__pattern {
+  position: absolute; opacity: .03;
+  font-size: 15rem; color: var(--sand-warm);
+  font-family: 'DM Serif Display', serif;
+}
+.interlude__pattern--left { left: -2rem; top: 50%; transform: translateY(-50%); }
+.interlude__pattern--right { right: -2rem; top: 50%; transform: translateY(-50%); }
+
+/* === COLLECTIONS === */
+.collection {
+  padding: 4rem 2rem 6rem;
+  max-width: 1200px; margin: 0 auto;
+}
+.collection__header {
+  text-align: center; margin-bottom: 4rem;
+}
+.collection__number {
+  font-size: .65rem; letter-spacing: .3em;
+  color: var(--sand-warm); text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+.collection__title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  color: var(--cream); margin-bottom: .5rem;
+}
+.collection__subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; color: rgba(232,213,183,.4);
+  font-style: italic;
+}
+.collection__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+/* === DRESS CARD === */
+.dress-card {
+  position: relative; border-radius: 16px; overflow: hidden;
+  background: rgba(15,58,82,.3);
+  border: 1px solid rgba(232,213,183,.06);
+  transition: all .5s cubic-bezier(.23,1,.32,1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+.dress-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(232,213,183,.12);
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.dress-card__visual {
+  height: 380px; position: relative; overflow: hidden;
+}
+.dress-card__gradient {
+  width: 100%; height: 100%;
+  transition: transform .6s cubic-bezier(.23,1,.32,1);
+}
+.dress-card:hover .dress-card__gradient {
+  transform: scale(1.05);
+}
+.dress-card__shimmer {
+  position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.05), transparent);
+  transition: left .6s;
+}
+.dress-card:hover .dress-card__shimmer { left: 150%; }
+.dress-card__badge {
+  position: absolute; top: 16px; right: 16px;
+  background: rgba(7,30,44,.7); backdrop-filter: blur(10px);
+  padding: .3rem .8rem; border-radius: 20px;
+  font-size: .6rem; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--sand-warm);
+  border: 1px solid rgba(232,213,183,.1);
+}
+.dress-card__info { padding: 1.5rem; }
+.dress-card__name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem; color: var(--cream);
+  margin-bottom: .3rem;
+}
+.dress-card__category {
+  font-size: .65rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--sand-warm);
+  margin-bottom: .8rem;
+}
+.dress-card__detail {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .9rem; color: rgba(232,213,183,.4);
+  font-style: italic; line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.dress-card__footer {
+  display: flex; align-items: center;
+  justify-content: space-between;
+}
+.dress-card__price {
+  font-size: 1.1rem; font-weight: 500;
+  color: var(--sand-light);
+}
+.dress-card__price .currency {
+  font-size: .8rem; color: var(--sand-warm);
+}
+.dress-card__cart-btn {
+  padding: .5rem 1.2rem;
+  border: 1px solid rgba(232,213,183,.15);
+  background: transparent; color: var(--sand-light);
+  font-family: 'Outfit', sans-serif;
+  font-size: .65rem; font-weight: 500;
+  letter-spacing: .12em; text-transform: uppercase;
+  cursor: pointer; border-radius: 4px;
+  transition: all .3s;
+}
+.dress-card__cart-btn:hover {
+  background: var(--sand-warm);
+  border-color: var(--sand-warm);
+  color: var(--ocean-deep);
+}
+
+/* === CONTACT === */
+.contact {
+  padding: 8rem 2rem;
+  max-width: 700px; margin: 0 auto;
+}
+.contact__header { text-align: center; margin-bottom: 3rem; }
+.contact__label {
+  font-size: .65rem; letter-spacing: .3em;
+  color: var(--sand-warm); text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+.contact__title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  color: var(--cream);
+}
+.contact__form { display: flex; flex-direction: column; gap: 1.5rem; }
+.contact__field {
+  display: flex; flex-direction: column; gap: .5rem;
+}
+.contact__field label {
+  font-size: .7rem; letter-spacing: .15em;
+  text-transform: uppercase; color: rgba(232,213,183,.5);
+}
+.contact__field input,
+.contact__field textarea {
+  background: rgba(15,58,82,.3);
+  border: 1px solid rgba(232,213,183,.1);
+  color: var(--sand-light);
+  padding: .8rem 1rem; border-radius: 8px;
+  font-family: 'Outfit', sans-serif; font-size: .9rem;
+  transition: border-color .3s;
+  outline: none;
+}
+.contact__field input:focus,
+.contact__field textarea:focus {
+  border-color: var(--sand-warm);
+}
+.contact__field textarea { resize: vertical; min-height: 120px; }
+.contact__submit {
+  align-self: flex-start;
+  padding: .8rem 2.5rem;
+  border: 1px solid var(--sand-warm);
+  background: transparent; color: var(--sand-warm);
+  font-family: 'Outfit', sans-serif;
+  font-size: .7rem; font-weight: 500;
+  letter-spacing: .2em; text-transform: uppercase;
+  cursor: pointer; transition: all .4s;
+  border-radius: 4px;
+}
+.contact__submit:hover {
+  background: var(--sand-warm);
+  color: var(--ocean-deep);
+}
+
+/* === FOOTER === */
+.footer {
+  padding: 4rem 2rem 2rem;
+  border-top: 1px solid rgba(232,213,183,.06);
+  text-align: center;
+}
+.footer__brand {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--cream);
+  margin-bottom: .5rem;
+}
+.footer__brand span { color: var(--sand-warm); }
+.footer__text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .95rem; color: rgba(232,213,183,.3);
+  font-style: italic; margin-bottom: 2rem;
+}
+.footer__links {
+  display: flex; gap: 2rem; justify-content: center;
+  margin-bottom: 2rem; flex-wrap: wrap;
+}
+.footer__links a {
+  font-size: .7rem; letter-spacing: .15em;
+  text-transform: uppercase; color: rgba(232,213,183,.4);
+  transition: color .3s;
+}
+.footer__links a:hover { color: var(--sand-warm); }
+.footer__copy {
+  font-size: .7rem; color: rgba(232,213,183,.2);
+  letter-spacing: .1em;
+}
+
+/* === CART OVERLAY === */
+.cart-overlay {
+  position: fixed; top: 0; right: -420px;
+  width: 400px; max-width: 90vw; height: 100%;
+  background: rgba(7,30,44,.97); backdrop-filter: blur(30px);
+  z-index: 5000; transition: right .5s cubic-bezier(.23,1,.32,1);
+  border-left: 1px solid rgba(232,213,183,.06);
+  display: flex; flex-direction: column;
+  padding: 2rem;
+}
+.cart-overlay.open { right: 0; }
+.cart-overlay__header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.cart-overlay__title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem; color: var(--cream);
+}
+.cart-overlay__close {
+  background: none; border: 1px solid rgba(232,213,183,.15);
+  color: var(--sand-light); width: 36px; height: 36px;
+  border-radius: 50%; cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .3s;
+}
+.cart-overlay__close:hover {
+  border-color: var(--sand-warm); color: var(--cream);
+}
+.cart-overlay__items { flex: 1; overflow-y: auto; }
+.cart-item {
+  display: flex; gap: 1rem; padding: 1rem 0;
+  border-bottom: 1px solid rgba(232,213,183,.06);
+  align-items: center;
+}
+.cart-item__swatch {
+  width: 60px; height: 60px; border-radius: 10px;
+  flex-shrink: 0;
+}
+.cart-item__info { flex: 1; }
+.cart-item__name {
+  font-family: 'DM Serif Display', serif;
+  font-size: .95rem; color: var(--cream);
+}
+.cart-item__price {
+  font-size: .8rem; color: var(--sand-warm);
+  margin-top: .2rem;
+}
+.cart-item__qty {
+  display: flex; align-items: center; gap: .5rem;
+  margin-top: .4rem;
+}
+.cart-item__qty button {
+  width: 24px; height: 24px; border-radius: 4px;
+  border: 1px solid rgba(232,213,183,.15);
+  background: transparent; color: var(--sand-light);
+  cursor: pointer; font-size: .8rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .3s;
+}
+.cart-item__qty button:hover {
+  border-color: var(--sand-warm);
+}
+.cart-item__qty span {
+  font-size: .8rem; color: var(--sand-light);
+  min-width: 20px; text-align: center;
+}
+.cart-item__remove {
+  background: none; border: none;
+  color: rgba(232,213,183,.3); cursor: pointer;
+  font-size: .7rem; letter-spacing: .1em;
+  text-transform: uppercase; transition: color .3s;
+}
+.cart-item__remove:hover { color: var(--sand-warm); }
+.cart-overlay__footer {
+  border-top: 1px solid rgba(232,213,183,.1);
+  padding-top: 1.5rem; margin-top: 1rem;
+}
+.cart-overlay__total {
+  display: flex; justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.cart-overlay__total-label {
+  font-size: .75rem; letter-spacing: .15em;
+  text-transform: uppercase; color: rgba(232,213,183,.5);
+}
+.cart-overlay__total-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem; color: var(--cream);
+}
+.cart-overlay__checkout {
+  width: 100%; padding: .8rem;
+  background: var(--sand-warm); border: none;
+  color: var(--ocean-deep);
+  font-family: 'Outfit', sans-serif;
+  font-size: .75rem; font-weight: 600;
+  letter-spacing: .15em; text-transform: uppercase;
+  cursor: pointer; border-radius: 6px;
+  transition: all .3s;
+}
+.cart-overlay__checkout:hover {
+  background: var(--cream);
+}
+.cart-overlay__empty {
+  text-align: center; padding: 3rem 0;
+  color: rgba(232,213,183,.3);
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* === NOTIFICATION === */
+.notification {
+  position: fixed; bottom: 2rem; right: 2rem;
+  background: rgba(15,58,82,.95); backdrop-filter: blur(20px);
+  border: 1px solid rgba(232,213,183,.1);
+  padding: .8rem 1.5rem; border-radius: 10px;
+  color: var(--sand-light);
+  font-size: .8rem;
+  transform: translateY(100px); opacity: 0;
+  transition: all .4s cubic-bezier(.23,1,.32,1);
+  z-index: 6000;
+}
+.notification.show {
+  transform: translateY(0); opacity: 1;
+}
+
+/* === SCROLL ANIMATIONS === */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity .8s, transform .8s;
+}
+.reveal.visible {
+  opacity: 1; transform: translateY(0);
+}
+
+/* === VIRTUAL MIRROR === */
+.mirror-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(7, 30, 44, .97); z-index: 5000;
+  opacity: 0; pointer-events: none; transition: opacity .5s;
+  overflow-y: auto; overflow-x: hidden;
+}
+.mirror-overlay.open { opacity: 1; pointer-events: auto; }
+
+.mirror-inner {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; padding: 2rem 1.5rem 4rem;
+}
+
+.mirror-close {
+  position: fixed; top: 20px; right: 24px;
+  background: rgba(7,30,44,.8); backdrop-filter: blur(10px);
+  border: 1px solid rgba(232,213,183,.2);
+  color: var(--sand-light); width: 44px; height: 44px;
+  border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .3s; z-index: 10;
+}
+.mirror-close:hover { border-color: var(--sand-warm); color: var(--cream); }
+
+.mirror-title {
+  font-family: 'DM Serif Display', serif; font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--cream); margin-bottom: .5rem; text-align: center; margin-top: 1rem;
+}
+.mirror-subtitle {
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+  color: rgba(232,213,183,.5); font-style: italic; margin-bottom: 2rem; text-align: center;
+}
+
+/* Upload stage */
+.mirror-upload-stage {
+  display: flex; gap: 1.5rem; align-items: center; justify-content: center;
+  flex-wrap: wrap;
+}
+.mirror-upload-stage.hidden { display: none; }
+.mirror-upload-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 200px; height: 200px; border-radius: 16px;
+  border: 2px dashed rgba(232,213,183,.2); background: rgba(232,213,183,.03);
+  cursor: pointer; transition: all .4s; color: var(--sand-light);
+  font-family: 'Outfit', sans-serif; gap: .8rem;
+}
+.mirror-upload-btn:hover {
+  border-color: var(--sand-warm); background: rgba(232,213,183,.06);
+}
+.mirror-upload-btn svg { width: 48px; height: 48px; stroke: var(--sand-warm); stroke-width: 1.2; fill: none; }
+.mirror-upload-btn span { font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; }
+
+/* Try-on stage */
+.mirror-tryon-stage { display: none; width: 100%; max-width: 1000px; }
+.mirror-tryon-stage.active { display: block; }
+
+/* Photo + dress overlay area */
+.mirror-photo-area {
+  display: flex; gap: 2rem; align-items: flex-start;
+  justify-content: center; flex-wrap: wrap;
+}
+.mirror-canvas-wrap {
+  position: relative; width: 320px; flex-shrink: 0;
+  aspect-ratio: 3/4; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+}
+.mirror-user-photo {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+/* Full gradient wash overlay */
+.mirror-gradient-wash {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  opacity: .25; transition: all .6s ease; pointer-events: none;
+  mix-blend-mode: color;
+}
+/* Body-fit dress silhouette */
+.mirror-body-dress {
+  position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
+  width: 70%; height: 70%; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+  opacity: .6; transition: all .6s ease;
+  filter: drop-shadow(0 8px 30px rgba(0,0,0,.3));
+}
+.mirror-body-dress svg {
+  width: 100%; height: 100%; opacity: .35;
+}
+/* Currently wearing label */
+.mirror-wearing-label {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(7,30,44,.75); backdrop-filter: blur(10px);
+  padding: .4rem 1rem; border-radius: 20px;
+  font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--sand-warm); white-space: nowrap; z-index: 5;
+  border: 1px solid rgba(232,213,183,.1);
+}
+
+/* Side info panel (desktop) */
+.mirror-side-info {
+  flex: 1; min-width: 240px; max-width: 360px;
+  display: flex; flex-direction: column; gap: 1rem;
+  padding-top: .5rem;
+}
+.mirror-side-info__name {
+  font-family: 'DM Serif Display', serif; font-size: 1.6rem;
+  color: var(--cream); line-height: 1.2;
+}
+.mirror-side-info__cat {
+  font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--sand-warm);
+}
+.mirror-side-info__price {
+  font-size: 1.2rem; font-weight: 500; color: var(--sand-light);
+}
+.mirror-side-info__detail {
+  font-family: 'Cormorant Garamond', serif; font-size: .95rem;
+  color: rgba(232,213,183,.45); font-style: italic; line-height: 1.6;
+}
+.mirror-side-info__badge {
+  display: inline-block; padding: .3rem .8rem; border-radius: 20px;
+  background: rgba(196,101,74,.15); border: 1px solid rgba(196,101,74,.25);
+  font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--sand-warm); align-self: flex-start;
+}
+.mirror-side-info__actions {
+  display: flex; gap: .8rem; flex-wrap: wrap; margin-top: .5rem;
+}
+.mirror-side-info__add-btn {
+  padding: .6rem 1.8rem; border: 1px solid var(--sand-warm);
+  background: transparent; color: var(--sand-warm);
+  font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 500;
+  letter-spacing: .12em; text-transform: uppercase;
+  cursor: pointer; border-radius: 6px; transition: all .3s;
+}
+.mirror-side-info__add-btn:hover { background: var(--sand-warm); color: var(--ocean-deep); }
+.mirror-retake-inline {
+  padding: .6rem 1.2rem; border: 1px solid rgba(232,213,183,.15);
+  background: transparent; color: rgba(232,213,183,.5);
+  font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 400;
+  letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer; border-radius: 6px; transition: all .3s;
+}
+.mirror-retake-inline:hover { border-color: var(--sand-light); color: var(--sand-light); }
+
+/* Recommendations section */
+.mirror-reco {
+  margin-top: 3rem; width: 100%;
+}
+.mirror-reco__header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem; flex-wrap: wrap; gap: .5rem;
+}
+.mirror-reco__title {
+  font-family: 'DM Serif Display', serif; font-size: 1.3rem;
+  color: var(--cream);
+}
+.mirror-reco__match-hint {
+  font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--sand-warm); font-style: italic;
+  font-family: 'Cormorant Garamond', serif; font-size: .85rem;
+}
+.mirror-reco__toggle {
+  background: none; border: 1px solid rgba(232,213,183,.15);
+  color: rgba(232,213,183,.5); padding: .4rem 1rem; border-radius: 4px;
+  font-family: 'Outfit', sans-serif; font-size: .65rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer; transition: all .3s;
+}
+.mirror-reco__toggle:hover { border-color: var(--sand-warm); color: var(--sand-warm); }
+
+.mirror-reco__grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+.mirror-reco-card {
+  border-radius: 12px; overflow: hidden;
+  background: rgba(15,58,82,.3); border: 1px solid rgba(232,213,183,.06);
+  cursor: pointer; transition: all .4s; position: relative;
+}
+.mirror-reco-card:hover {
+  border-color: rgba(232,213,183,.15);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.25);
+}
+.mirror-reco-card.active {
+  border-color: var(--sand-warm);
+  box-shadow: 0 0 0 2px rgba(196,101,74,.3);
+}
+.mirror-reco-card__visual {
+  height: 160px; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.mirror-reco-card__gradient { width: 100%; height: 100%; }
+.mirror-reco-card__silhouette {
+  position: absolute; opacity: .15;
+}
+.mirror-reco-card__match {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(7,30,44,.7); backdrop-filter: blur(8px);
+  padding: .2rem .6rem; border-radius: 12px;
+  font-size: .55rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--teal-accent); border: 1px solid rgba(46,196,182,.2);
+}
+.mirror-reco-card__info { padding: 1rem; }
+.mirror-reco-card__name {
+  font-family: 'DM Serif Display', serif; font-size: 1rem;
+  color: var(--cream); margin-bottom: .2rem;
+}
+.mirror-reco-card__cat {
+  font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--sand-warm); margin-bottom: .4rem;
+}
+.mirror-reco-card__price {
+  font-size: .9rem; font-weight: 500; color: var(--sand-light);
+}
+.mirror-reco-card__try {
+  position: absolute; bottom: 8px; right: 8px;
+  padding: .35rem .8rem; border-radius: 4px;
+  background: rgba(196,101,74,.15); border: 1px solid rgba(196,101,74,.25);
+  color: var(--sand-warm); font-family: 'Outfit', sans-serif;
+  font-size: .55rem; letter-spacing: .1em; text-transform: uppercase;
+  opacity: 0; transition: opacity .3s; cursor: pointer;
+}
+.mirror-reco-card:hover .mirror-reco-card__try { opacity: 1; }
+
+/* Camera mode */
+.mirror-video {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transform: scaleX(-1);
+}
+.mirror-capture-btn {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 4px solid var(--cream); background: rgba(196,101,74,.8);
+  cursor: pointer; transition: all .3s; z-index: 5;
+  box-shadow: 0 4px 20px rgba(0,0,0,.3);
+}
+.mirror-capture-btn:hover { background: var(--coral); transform: translateX(-50%) scale(1.1); }
+.mirror-capture-btn::after {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%); width: 20px; height: 20px;
+  border-radius: 50%; background: var(--cream);
+}
+.mirror-retake-btn {
+  position: absolute; top: 15px; left: 15px;
+  background: rgba(0,0,0,.5); border: none; color: var(--cream);
+  padding: .4rem .8rem; border-radius: 4px; cursor: pointer;
+  font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+  font-family: 'Outfit', sans-serif; z-index: 5; transition: all .3s;
+}
+.mirror-retake-btn:hover { background: rgba(0,0,0,.7); }
+
+/* Analyzing animation */
+.mirror-analyzing {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(7,30,44,.7); display: flex;
+  flex-direction: column; align-items: center; justify-content: center;
+  z-index: 6; border-radius: 16px; gap: .8rem;
+}
+.mirror-analyzing.hidden { display: none; }
+.mirror-analyzing__spinner {
+  width: 36px; height: 36px; border: 2px solid rgba(232,213,183,.15);
+  border-top-color: var(--sand-warm); border-radius: 50%;
+  animation: mirrorSpin .8s linear infinite;
+}
+@keyframes mirrorSpin { to { transform: rotate(360deg); } }
+.mirror-analyzing__text {
+  font-size: .7rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--sand-warm);
+}
+
+/* === RESPONSIVE === */
+@media(max-width: 768px) {
+  .navbar { padding: 1rem 1.5rem; }
+  .navbar.scrolled { padding: .6rem 1.5rem; }
+  .navbar__toggle { display: flex; }
+  .navbar__links {
+    position: fixed; top: 0; right: -100%;
+    width: 280px; height: 100vh;
+    background: rgba(7,30,44,.98); backdrop-filter: blur(30px);
+    flex-direction: column; padding: 5rem 2rem;
+    transition: right .4s; gap: 2rem;
+  }
+  .navbar__links.open { right: 0; }
+  .collection__grid {
+    grid-template-columns: 1fr;
+  }
+  .hero__title { font-size: clamp(2rem, 8vw, 3.5rem); }
+}
+
+@media(max-width: 600px) {
+  .mirror-upload-btn { width: 150px; height: 150px; }
+  .mirror-canvas-wrap { width: 100%; max-width: none; }
+  .mirror-photo-area { flex-direction: column; align-items: center; gap: 1.5rem; }
+  .mirror-side-info { max-width: 100%; min-width: auto; text-align: center; align-items: center; }
+  .mirror-side-info__actions { justify-content: center; }
+  .mirror-reco__grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}
+
+@media(max-width: 480px) {
+  .dress-card__visual { height: 280px; }
+  .interlude { padding: 5rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<!-- SCROLL PROGRESS -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- INTRO CINEMATIC — BRAND ZOOM + DRESS RUNWAY -->
+<div class="intro-overlay" id="introOverlay">
+  <div class="intro-bg" id="introBg"></div>
+  <div class="intro-ring"></div>
+  <div class="intro-ring"></div>
+  <div class="intro-ring"></div>
+
+  <!-- Phase 1: Big brand center -->
+  <div class="intro-hero-brand" id="introHeroBrand">
+    <div class="intro-hero-brand__name" id="introBrandName">Coastal<em>Aura</em></div>
+    <div class="intro-hero-brand__sub" id="introBrandSub">Mangalore Heritage Clothing</div>
+    <div class="intro-hero-brand__line" id="introBrandLine"></div>
+  </div>
+
+  <!-- Phase 2: Dress stage -->
+  <div class="intro-stage" id="introStage"></div>
+
+  <div class="intro-progress" id="introProgressBar">
+    <div class="intro-progress__bar"><div class="intro-progress__fill" id="introProgressFill"></div></div>
+    <div class="intro-progress__count" id="introCount">1 / 12</div>
+  </div>
+  <button class="intro-skip" id="introSkip">Skip Intro</button>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- PARTICLES -->
+<div class="particles" id="particles"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="navbar__logo">Coastal<span>Aura</span></div>
+  <ul class="navbar__links" id="navLinks">
+    <li><a href="#collections">Collections</a></li>
+    <li><a href="#heritage">Heritage</a></li>
+    <li><a href="#" id="mirrorLink">Mirror</a></li>
+    <li><a href="#" onclick="openAdmin()">Admin</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><button class="navbar__cart" id="cartBtn">Cart <span class="navbar__cart-count" id="cartCount">0</span></button></li>
+  </ul>
+  <button class="navbar__toggle" id="navToggle">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero__bg"></div>
+  <div class="hero__content">
+    <div class="hero__tagline">Established in the Heart of Coastal Karnataka</div>
+    <h1 class="hero__title">Woven by Tradition, Inspired by the Coast</h1>
+    <p class="hero__subtitle">Where the Arabian Sea meets centuries of Tulunadu weaving tradition — draping you in the soul of coastal Karnataka</p>
+    <a href="#collections" class="hero__cta">Explore Collections</a>
+  </div>
+  <div class="hero__waves">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,70 1440,80 L1440,120 L0,120 Z" fill="var(--ocean-deep)" opacity=".5"/>
+      <path d="M0,80 C360,20 720,100 1080,40 C1260,20 1380,50 1440,30 L1440,120 L0,120 Z" fill="var(--ocean-deep)" opacity=".8"/>
+    </svg>
+  </div>
+</section>
+
+<!-- CULTURAL INTERLUDE 1 -->
+<section class="interlude reveal" id="heritage">
+  <div class="interlude__pattern interlude__pattern--left">&#9753;</div>
+  <div class="interlude__line"></div>
+  <div class="interlude__label">Our Heritage</div>
+  <h2 class="interlude__title">Woven from the Shores of Mangalore</h2>
+  <p class="interlude__text">Each thread carries the whisper of Arabian Sea waves, the warmth of laterite soil, and the devotion of artisans who have perfected their craft across generations.</p>
+  <div class="interlude__pattern interlude__pattern--right">&#9753;</div>
+</section>
+
+<!-- COLLECTION 1 — Heritage Sarees -->
+<section class="collection reveal" id="collections">
+  <div class="collection__header">
+    <div class="collection__number">Collection 01</div>
+    <h2 class="collection__title">Heritage Sarees</h2>
+    <p class="collection__subtitle">Timeless drapes from coastal looms</p>
+  </div>
+  <div class="collection__grid" id="grid1"></div>
+</section>
+
+<!-- CULTURAL INTERLUDE 2 -->
+<section class="interlude reveal">
+  <div class="interlude__line"></div>
+  <div class="interlude__label">The Craft</div>
+  <h2 class="interlude__title">Artistry in Every Stitch</h2>
+  <p class="interlude__text">From hand-spun Udupi cotton to Kasuti embroidery patterns passed down through centuries, our garments are a living testament to Karnataka's textile legacy.</p>
+</section>
+
+<!-- COLLECTION 2 — Modern Coastal -->
+<section class="collection reveal">
+  <div class="collection__header">
+    <div class="collection__number">Collection 02</div>
+    <h2 class="collection__title">Modern Coastal</h2>
+    <p class="collection__subtitle">Contemporary silhouettes, heritage soul</p>
+  </div>
+  <div class="collection__grid" id="grid2"></div>
+</section>
+
+<!-- CULTURAL INTERLUDE 3 -->
+<section class="interlude reveal">
+  <div class="interlude__line"></div>
+  <div class="interlude__label">Sustainability</div>
+  <h2 class="interlude__title">Gentle on the Earth</h2>
+  <p class="interlude__text">We honor nature's gifts — using natural dyes from turmeric, indigo, and pomegranate, ensuring every creation is as kind to the earth as it is beautiful to behold.</p>
+</section>
+
+<!-- COLLECTION 3 — Festive Edit -->
+<section class="collection reveal">
+  <div class="collection__header">
+    <div class="collection__number">Collection 03</div>
+    <h2 class="collection__title">Festive Edit</h2>
+    <p class="collection__subtitle">Celebrations dressed in tradition</p>
+  </div>
+  <div class="collection__grid" id="grid3"></div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact reveal" id="contact">
+  <div class="contact__header">
+    <div class="contact__label">Get in Touch</div>
+    <h2 class="contact__title">Write to Us</h2>
+  </div>
+  <form class="contact__form" onsubmit="event.preventDefault(); showNotification('Thank you! We\'ll respond soon.');">
+    <div class="contact__field">
+      <label for="contactName">Name</label>
+      <input type="text" id="contactName" placeholder="Your full name" required>
+    </div>
+    <div class="contact__field">
+      <label for="contactEmail">Email</label>
+      <input type="email" id="contactEmail" placeholder="you@example.com" required>
+    </div>
+    <div class="contact__field">
+      <label for="contactMsg">Message</label>
+      <textarea id="contactMsg" placeholder="Tell us what you're looking for..." required></textarea>
+    </div>
+    <button type="submit" class="contact__submit">Send Message</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer__brand">Coastal<span>Aura</span></div>
+  <p class="footer__text">Mangalore Heritage Clothing — Where Every Thread Tells a Story</p>
+  <div class="footer__links">
+    <a href="#collections">Collections</a>
+    <a href="#heritage">Heritage</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <p class="footer__copy">&copy; 2026 Coastal Aura. All rights reserved.</p>
+</footer>
+
+<!-- VIRTUAL MIRROR -->
+<div class="mirror-overlay" id="mirrorOverlay">
+  <div class="mirror-inner">
+    <button class="mirror-close" id="mirrorClose">&times;</button>
+    <h2 class="mirror-title">Virtual Mirror</h2>
+    <p class="mirror-subtitle">See yourself in our collection — upload or capture a photo</p>
+
+    <div class="mirror-upload-stage" id="mirrorUploadStage">
+      <label class="mirror-upload-btn" for="mirrorFileInput">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Upload Photo</span>
+        <input type="file" id="mirrorFileInput" accept="image/*" style="display:none">
+      </label>
+      <button class="mirror-upload-btn" id="mirrorCameraBtn">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>Take Photo</span>
+      </button>
+    </div>
+
+    <div class="mirror-tryon-stage" id="mirrorTryonStage">
+      <!-- Photo + dress overlay + side info -->
+      <div class="mirror-photo-area">
+        <div class="mirror-canvas-wrap" id="mirrorCanvasWrap">
+          <img class="mirror-user-photo" id="mirrorUserPhoto" alt="Your photo">
+          <video class="mirror-video" id="mirrorVideo" autoplay playsinline style="display:none"></video>
+          <button class="mirror-capture-btn" id="mirrorCaptureBtn" style="display:none"></button>
+          <div class="mirror-gradient-wash" id="mirrorGradientWash"></div>
+          <div class="mirror-body-dress" id="mirrorBodyDress"></div>
+          <div class="mirror-wearing-label" id="mirrorWearingLabel"></div>
+          <div class="mirror-analyzing hidden" id="mirrorAnalyzing">
+            <div class="mirror-analyzing__spinner"></div>
+            <div class="mirror-analyzing__text">Analyzing your look...</div>
+          </div>
+        </div>
+        <div class="mirror-side-info" id="mirrorSideInfo">
+          <div class="mirror-side-info__badge" id="mirrorSideBadge"></div>
+          <div class="mirror-side-info__name" id="mirrorSideName"></div>
+          <div class="mirror-side-info__cat" id="mirrorSideCat"></div>
+          <div class="mirror-side-info__price" id="mirrorSidePrice"></div>
+          <div class="mirror-side-info__detail" id="mirrorSideDetail"></div>
+          <div class="mirror-side-info__actions">
+            <button class="mirror-side-info__add-btn" id="mirrorAddBtn">Add to Cart</button>
+            <button class="mirror-retake-inline" id="mirrorRetakeBtn2">New Photo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommended dresses -->
+      <div class="mirror-reco" id="mirrorReco">
+        <div class="mirror-reco__header">
+          <div>
+            <div class="mirror-reco__title" id="mirrorRecoTitle">Recommended for You</div>
+            <div class="mirror-reco__match-hint" id="mirrorRecoHint">Based on your photo's color palette</div>
+          </div>
+          <button class="mirror-reco__toggle" id="mirrorRecoToggle">Show All</button>
+        </div>
+        <div class="mirror-reco__grid" id="mirrorRecoGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cartOverlay">
+  <div class="cart-overlay__header">
+    <div class="cart-overlay__title">Your Cart</div>
+    <button class="cart-overlay__close" id="cartClose">&times;</button>
+  </div>
+  <div class="cart-overlay__items" id="cartItems"></div>
+  <div class="cart-overlay__footer">
+    <div class="cart-overlay__total">
+      <span class="cart-overlay__total-label">Total</span>
+      <span class="cart-overlay__total-value" id="cartTotal">&#8377;0</span>
+    </div>
+    <button class="cart-overlay__checkout" onclick="showNotification('Checkout coming soon!')">Checkout</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notification" id="notification"></div>
+<script>
+// ==================== DATA ====================
+const dresses = [
+  { id: 1, name: 'Mangalore Silk Drape', category: 'Heritage Saree', price: 18500, image: 'images/saree1.jpg', detail: 'Pure silk with traditional temple border motifs inspired by Kadri temple architecture.', gradient: 'linear-gradient(135deg, #8B1A1A, #CD853F, #DAA520)', badge: 'Handloom', collection: 1 },
+  { id: 2, name: 'Udupi Cotton Weave', category: 'Heritage Saree', price: 7200, image: 'images/saree2.jpg', detail: 'Hand-spun cotton from Udupi looms with subtle kasuti embroidery along the pallu.', gradient: 'linear-gradient(135deg, #F5F5DC, #D2B48C, #8FBC8F)', badge: 'Organic', collection: 1 },
+  { id: 3, name: 'Tulu Nadu Gold Border', category: 'Heritage Saree', price: 24000, image: 'images/saree3.jpg', detail: 'Rich zari work depicting Yakshagana characters, woven by master artisans of Tulu Nadu.', gradient: 'linear-gradient(135deg, #800020, #FFD700, #800020)', badge: 'Zari Work', collection: 1 },
+  { id: 4, name: 'Arabian Sea Indigo', category: 'Heritage Saree', price: 12800, image: 'images/saree4.jpg', detail: 'Natural indigo-dyed saree with wave patterns reminiscent of the Mangalore coastline.', gradient: 'linear-gradient(135deg, #191970, #4169E1, #87CEEB)', badge: 'Natural Dye', collection: 1 },
+  { id: 5, name: 'Coastal Breeze Tunic', category: 'Modern Coastal', price: 4500, image: 'images/saree5.webp', detail: 'Lightweight cotton tunic with abstract wave prints, perfect for tropical evenings.', gradient: 'linear-gradient(135deg, #20B2AA, #48D1CC, #F0F8FF)', badge: 'Casual', collection: 2 },
+  { id: 6, name: 'Laterite Linen Dress', category: 'Modern Coastal', price: 6800, image: 'images/dress1.webp', detail: 'Earth-toned linen dress inspired by Mangalore\'s iconic laterite stone architecture.', gradient: 'linear-gradient(135deg, #A0522D, #D2691E, #F4A460)', badge: 'Linen', collection: 2 },
+  { id: 7, name: 'Monsoon Wrap Kurta', category: 'Modern Coastal', price: 5200, image: 'images/dress2.webp', detail: 'Fluid wrap-style kurta in rain-cloud greys with silver thread accents.', gradient: 'linear-gradient(135deg, #708090, #B0C4DE, #C0C0C0)', badge: 'Contemporary', collection: 2 },
+  { id: 8, name: 'Palm Frond Palazzo Set', category: 'Modern Coastal', price: 7800, image: 'images/dress3.jpg', detail: 'Matching palazzo and crop top with botanical palm leaf prints in forest green.', gradient: 'linear-gradient(135deg, #006400, #228B22, #90EE90)', badge: 'Co-ord Set', collection: 2 },
+  { id: 9, name: 'Navaratri Silk Lehenga', category: 'Festive Edit', price: 35000, image: 'images/dress4.jpg', detail: 'Nine-color embroidered lehenga celebrating the spirit of Navaratri with mirror work.', gradient: 'linear-gradient(135deg, #FF1493, #FF6347, #FFD700, #32CD32, #4169E1)', badge: 'Bridal', collection: 3 },
+  { id: 10, name: 'Deepavali Gold Anarkali', category: 'Festive Edit', price: 22000, image: 'images/dress5.webp', detail: 'Resplendent gold-and-maroon Anarkali with diya-inspired embroidery patterns.', gradient: 'linear-gradient(135deg, #FFD700, #B8860B, #8B0000)', badge: 'Festive', collection: 3 },
+  { id: 11, name: 'Sankranti Pattu Pavadai', category: 'Festive Edit', price: 15500, image: 'images/dress6.webp', detail: 'Traditional pattu pavadai in auspicious yellow and green, perfect for harvest festivals.', gradient: 'linear-gradient(135deg, #FFD700, #ADFF2F, #FF8C00)', badge: 'Traditional', collection: 3 },
+  { id: 12, name: 'Mangalore Jasmine Churidar', category: 'Festive Edit', price: 9800,image:'images/dress7.webp', detail: 'White-and-gold churidar set adorned with delicate jasmine-inspired chikankari work.', gradient: 'linear-gradient(135deg, #FFFFF0, #FFFACD, #FFE4B5)', badge: 'Chikankari', collection: 3 }
+];
+
+// ==================== INTRO: BRAND ZOOM → DRESS RUNWAY ====================
+(function initIntro() {
+  const stage = document.getElementById('introStage');
+  const bg = document.getElementById('introBg');
+  const progressFill = document.getElementById('introProgressFill');
+  const countEl = document.getElementById('introCount');
+  const overlay = document.getElementById('introOverlay');
+  const heroBrand = document.getElementById('introHeroBrand');
+  const brandName = document.getElementById('introBrandName');
+  const brandSub = document.getElementById('introBrandSub');
+  const brandLine = document.getElementById('introBrandLine');
+  const progressBar = document.getElementById('introProgressBar');
+  const skipBtn = document.getElementById('introSkip');
+  const rings = document.querySelectorAll('.intro-ring');
+
+  let introIdx = -1;
+  let introFinished = false;
+  let introInterval = null;
+  const DRESS_TIME = 2500;
+
+  const silhouetteSVG = `<svg viewBox="0 0 120 220" width="100" height="180" xmlns="http://www.w3.org/2000/svg" fill="white">
+    <path d="M60 15C55 15 48 20 46 30C44 40 42 48 38 58C34 68 26 75 24 82C20 94 18 110 20 128C22 146 28 162 34 176C38 186 40 194 42 204C44 210 50 215 60 215C70 215 76 210 78 204C80 194 82 186 86 176C92 162 98 146 100 128C102 110 100 94 96 82C94 75 86 68 82 58C78 48 76 40 74 30C72 20 65 15 60 15Z" opacity=".18"/>
+    <ellipse cx="60" cy="12" rx="9" ry="10" opacity=".12"/>
+  </svg>`;
+
+  function darkenGradient(gradient) {
+    return gradient.replace('linear-gradient(135deg,', 'linear-gradient(160deg,');
+  }
+
+  // Build dress cards
+  dresses.forEach((d, i) => {
+    const el = document.createElement('div');
+    el.className = 'intro-dress';
+    el.id = 'introDress-' + i;
+    el.innerHTML = `
+      <div class="intro-dress__swatch">
+        <img src="${d.image}" alt="${d.name}"
+             style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div class="intro-dress__stand"></div>
+      <div class="intro-dress__base"></div>
+      <div class="intro-dress__info">
+        <div class="intro-dress__badge">${d.badge}</div>
+        <div class="intro-dress__name">${d.name}</div>
+        <div class="intro-dress__category">${d.category}</div>
+        <div class="intro-dress__price">₹${d.price.toLocaleString('en-IN')}</div>
+      </div>
+    `;
+    stage.appendChild(el);
+  });
+
+  // ---- Phase 1: Brand zoom in center ----
+  // Step 1: Show brand name (zoom in)
+  setTimeout(() => {
+    brandName.classList.add('visible');
+    // Expand rings
+    rings.forEach(r => r.classList.add('visible'));
+  }, 300);
+
+  // Step 2: Show subtitle + line
+  setTimeout(() => {
+    brandSub.classList.add('visible');
+    brandLine.classList.add('visible');
+  }, 1000);
+
+  // ---- Phase 2: Brand shrinks up, dresses start ----
+  setTimeout(() => {
+    // Shrink brand to top
+    heroBrand.classList.add('zoom-out');
+    // Show skip button
+    skipBtn.classList.add('visible');
+  }, 2800);
+
+  // Start dress slideshow after brand moves up
+  setTimeout(() => {
+    // Show stage + progress
+    stage.classList.add('visible');
+    progressBar.classList.add('visible');
+    // Start cycling
+    advanceIntro();
+    introInterval = setInterval(advanceIntro, DRESS_TIME);
+  }, 3600);
+
+  function showIntroDress(idx) {
+    const prev = document.querySelector('.intro-dress.active');
+    if (prev) {
+      prev.classList.remove('active');
+      prev.classList.add('exit-up');
+      setTimeout(() => { prev.classList.remove('exit-up'); }, 900);
+    }
+    const current = document.getElementById('introDress-' + idx);
+    if (current) {
+      current.classList.remove('enter-below', 'exit-up');
+      current.classList.add('enter-below');
+      void current.offsetWidth;
+      requestAnimationFrame(() => {
+        current.classList.remove('enter-below');
+        current.classList.add('active');
+      });
+    }
+    // Change background
+    const d = dresses[idx];
+    bg.style.background = darkenGradient(d.gradient);
+    bg.style.filter = 'brightness(.35) saturate(1.2)';
+    // Counter + progress
+    countEl.textContent = (idx + 1) + ' / ' + dresses.length;
+    progressFill.style.width = ((idx + 1) / dresses.length * 100) + '%';
+  }
+
+  function advanceIntro() {
+    introIdx++;
+    if (introIdx >= dresses.length) {
+      finishIntro();
+      return;
+    }
+    showIntroDress(introIdx);
+  }
+
+  function finishIntro() {
+    if (introFinished) return;
+    introFinished = true;
+    clearInterval(introInterval);
+    overlay.classList.add('fade-out');
+    setTimeout(() => { overlay.style.display = 'none'; }, 1000);
+  }
+
+  skipBtn.addEventListener('click', finishIntro);
+})();
+
+// ==================== RENDER GRIDS ====================
+function renderGrid(containerId, collectionNum) {
+  const container = document.getElementById(containerId);
+  const items = dresses.filter(d => d.collection === collectionNum);
+  items.forEach(d => {
+    const card = document.createElement('div');
+    card.className = 'dress-card reveal';
+    card.innerHTML = `
+      <div class="dress-card__visual">
+        <img src="${d.image}"
+     alt="${d.name}"
+     style="width:100%;height:100%;object-fit:cover;">
+        <div class="dress-card__shimmer"></div>
+        <div class="dress-card__badge">${d.badge}</div>
+      </div>
+      <div class="dress-card__info">
+        <h3 class="dress-card__name">${d.name}</h3>
+        <div class="dress-card__category">${d.category}</div>
+        <p class="dress-card__detail">${d.detail}</p>
+        <div class="dress-card__footer">
+          <div class="dress-card__price"><span class="currency">&#8377;</span>${d.price}</div>
+          <button class="dress-card__cart-btn" onclick="addToCart(${d.id})">Add to Cart</button>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+renderGrid('grid1', 1);
+renderGrid('grid2', 2);
+renderGrid('grid3', 3);
+
+// ==================== SCROLL ANIMATIONS ====================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ==================== SCROLL PROGRESS ====================
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (scrollTop / docHeight) * 100;
+  document.getElementById('scrollProgress').style.width = progress + '%';
+
+  // Navbar scroll state
+  const navbar = document.getElementById('navbar');
+  if (scrollTop > 80) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+
+// ==================== CART ====================
+let cart = [];
+
+function addToCart(id) {
+  const dress = dresses.find(d => d.id === id);
+  const existing = cart.find(c => c.id === id);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ ...dress, qty: 1 });
+  }
+  updateCart();
+  showNotification(`${dress.name} added to cart`);
+}
+
+function updateCart() {
+  const itemsEl = document.getElementById('cartItems');
+  const countEl = document.getElementById('cartCount');
+  const totalEl = document.getElementById('cartTotal');
+
+  const totalQty = cart.reduce((s, c) => s + c.qty, 0);
+  const totalPrice = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  countEl.textContent = totalQty;
+  totalEl.innerHTML = '&#8377;' + totalPrice.toLocaleString('en-IN');
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML = '<div class="cart-overlay__empty">Your cart is empty</div>';
+    return;
+  }
+
+  itemsEl.innerHTML = cart.map(c => `
+    <div class="cart-item">
+      <div class="cart-item__swatch" style="background:${c.gradient}"></div>
+      <div class="cart-item__info">
+        <div class="cart-item__name">${c.name}</div>
+        <div class="cart-item__price">&#8377;${c.price.toLocaleString('en-IN')}</div>
+        <div class="cart-item__qty">
+          <button onclick="changeQty(${c.id}, -1)">-</button>
+          <span>${c.qty}</span>
+          <button onclick="changeQty(${c.id}, 1)">+</button>
+        </div>
+      </div>
+      <button class="cart-item__remove" onclick="removeFromCart(${c.id})">Remove</button>
+    </div>
+  `).join('');
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (item) {
+    item.qty += delta;
+    if (item.qty <= 0) removeFromCart(id);
+    else updateCart();
+  }
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  updateCart();
+}
+
+// Cart open/close
+document.getElementById('cartBtn').addEventListener('click', () => {
+  document.getElementById('cartOverlay').classList.add('open');
+});
+document.getElementById('cartClose').addEventListener('click', () => {
+  document.getElementById('cartOverlay').classList.remove('open');
+});
+
+updateCart();
+
+// ==================== NOTIFICATION ====================
+function showNotification(msg) {
+  const el = document.getElementById('notification');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ==================== MOBILE NAV ====================
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// Close mobile nav on link click
+document.querySelectorAll('.navbar__links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+
+// ==================== CUSTOM CURSOR ====================
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursorDot.style.left = mouseX + 'px';
+  cursorDot.style.top = mouseY + 'px';
+});
+
+function animateRing() {
+  ringX += (mouseX - ringX) * 0.15;
+  ringY += (mouseY - ringY) * 0.15;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top = ringY + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// Hover effect on interactive elements
+document.querySelectorAll('a, button, .dress-card, input, textarea, label').forEach(el => {
+  el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+});
+
+// Hide cursor on touch devices
+if ('ontouchstart' in window) {
+  cursorDot.style.display = 'none';
+  cursorRing.style.display = 'none';
+  document.body.style.cursor = 'auto';
+}
+
+// ==================== PARTICLES ====================
+(function initParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (8 + Math.random() * 12) + 's';
+    p.style.animationDelay = Math.random() * 10 + 's';
+    p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+    container.appendChild(p);
+  }
+})();
+
+// ==================== 3D TILT ON CARDS ====================
+document.querySelectorAll('.dress-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rotateX = ((y - rect.height / 2) / rect.height) * -6;
+    const rotateY = ((x - rect.width / 2) / rect.width) * 6;
+    card.style.transform = `translateY(-8px) perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+// ==================== VIRTUAL MIRROR ====================
+const mirrorOverlay = document.getElementById('mirrorOverlay');
+const mirrorUploadStage = document.getElementById('mirrorUploadStage');
+const mirrorTryonStage = document.getElementById('mirrorTryonStage');
+const mirrorUserPhoto = document.getElementById('mirrorUserPhoto');
+const mirrorVideo = document.getElementById('mirrorVideo');
+const mirrorCaptureBtn = document.getElementById('mirrorCaptureBtn');
+const mirrorGradientWash = document.getElementById('mirrorGradientWash');
+const mirrorBodyDress = document.getElementById('mirrorBodyDress');
+const mirrorRecoGrid = document.getElementById('mirrorRecoGrid');
+let mirrorCurrentDress = 0;
+let mirrorStream = null;
+let mirrorShowAll = false;
+let mirrorSuggestedIds = [];
+
+const dressSVG = `<svg viewBox="0 0 120 220" xmlns="http://www.w3.org/2000/svg">
+  <path d="M60 15C55 15 48 20 46 30C44 40 42 48 38 58C34 68 26 75 24 82C20 94 18 110 20 128C22 146 28 162 34 176C38 186 40 194 42 204C44 210 50 215 60 215C70 215 76 210 78 204C80 194 82 186 86 176C92 162 98 146 100 128C102 110 100 94 96 82C94 75 86 68 82 58C78 48 76 40 74 30C72 20 65 15 60 15Z" fill="white" opacity=".3"/>
+  <path d="M48 30C50 26 54 22 60 22C66 22 70 26 72 30" fill="none" stroke="white" stroke-width="1" opacity=".2"/>
+  <ellipse cx="60" cy="12" rx="9" ry="10" fill="white" opacity=".15"/>
+  <path d="M38 58C42 56 50 54 60 54C70 54 78 56 82 58" fill="none" stroke="white" stroke-width=".8" opacity=".15"/>
+  <path d="M34 176C42 172 50 170 60 170C70 170 78 172 86 176" fill="none" stroke="white" stroke-width=".5" opacity=".1"/>
+</svg>`;
+
+// Open mirror
+document.getElementById('mirrorLink').addEventListener('click', e => {
+  e.preventDefault();
+  mirrorOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('navLinks').classList.remove('open');
+});
+
+document.getElementById('mirrorClose').addEventListener('click', closeMirror);
+
+function closeMirror() {
+  mirrorOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+  stopCamera();
+}
+
+// File upload
+document.getElementById('mirrorFileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    mirrorUserPhoto.src = ev.target.result;
+    mirrorUserPhoto.onload = () => {
+      mirrorUserPhoto.style.display = 'block';
+      mirrorVideo.style.display = 'none';
+      mirrorCaptureBtn.style.display = 'none';
+      enterTryonMode();
+    };
+  };
+  reader.readAsDataURL(file);
+});
+
+// Camera
+document.getElementById('mirrorCameraBtn').addEventListener('click', async () => {
+  try {
+    mirrorStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 960 } }
+    });
+    mirrorVideo.srcObject = mirrorStream;
+    mirrorVideo.style.display = 'block';
+    mirrorUserPhoto.style.display = 'none';
+    mirrorCaptureBtn.style.display = 'block';
+    mirrorUploadStage.classList.add('hidden');
+    mirrorTryonStage.classList.add('active');
+    // Hide overlays until capture
+    mirrorGradientWash.style.display = 'none';
+    mirrorBodyDress.style.display = 'none';
+    document.getElementById('mirrorWearingLabel').style.display = 'none';
+    document.getElementById('mirrorSideInfo').style.display = 'none';
+    document.getElementById('mirrorReco').style.display = 'none';
+  } catch (err) {
+    alert('Camera access denied. Please use the upload option instead.');
+  }
+});
+
+// Capture
+mirrorCaptureBtn.addEventListener('click', () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = mirrorVideo.videoWidth;
+  canvas.height = mirrorVideo.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.translate(canvas.width, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(mirrorVideo, 0, 0);
+  mirrorUserPhoto.src = canvas.toDataURL('image/jpeg', 0.9);
+  mirrorUserPhoto.onload = () => {
+    mirrorUserPhoto.style.display = 'block';
+    mirrorVideo.style.display = 'none';
+    mirrorCaptureBtn.style.display = 'none';
+    stopCamera();
+    enterTryonMode();
+  };
+});
+
+// Retake (both buttons)
+function handleRetake() {
+  mirrorUserPhoto.style.display = 'none';
+  mirrorGradientWash.style.display = 'none';
+  mirrorBodyDress.style.display = 'none';
+  document.getElementById('mirrorWearingLabel').style.display = 'none';
+  document.getElementById('mirrorSideInfo').style.display = 'none';
+  document.getElementById('mirrorReco').style.display = 'none';
+  mirrorTryonStage.classList.remove('active');
+  mirrorUploadStage.classList.remove('hidden');
+  mirrorShowAll = false;
+  document.getElementById('mirrorRecoToggle').textContent = 'Show All';
+  // Reset file input
+  document.getElementById('mirrorFileInput').value = '';
+}
+document.getElementById('mirrorRetakeBtn2').addEventListener('click', handleRetake);
+
+function stopCamera() {
+  if (mirrorStream) {
+    mirrorStream.getTracks().forEach(t => t.stop());
+    mirrorStream = null;
+  }
+}
+function renderDresses() {
+  const grid1 = document.getElementById("grid1");
+  const grid2 = document.getElementById("grid2");
+  const grid3 = document.getElementById("grid3");
+
+  grid1.innerHTML = "";
+  grid2.innerHTML = "";
+  grid3.innerHTML = "";
+
+  dresses.forEach(d => {
+
+    const card = `
+      <div class="dress-card reveal">
+        <div class="dress-card__visual">
+          <div class="dress-card__gradient" style="background:${d.gradient}"></div>
+          <div class="dress-card__shimmer"></div>
+          <div class="dress-card__badge">${d.badge}</div>
+        </div>
+
+        <div class="dress-card__info">
+          <h3 class="dress-card__name">${d.name}</h3>
+          <div class="dress-card__category">${d.category}</div>
+          <p class="dress-card__detail">${d.detail}</p>
+
+          <div class="dress-card__footer">
+            <div class="dress-card__price">
+              <span class="currency">₹</span>${d.price.toLocaleString('en-IN')}
+            </div>
+
+            <button class="dress-card__cart-btn">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    if (Number(d.collection) === 1) {
+  grid1.innerHTML += card;
+} else if (Number(d.collection) === 2) {
+  grid2.innerHTML += card;
+} else if (Number(d.collection) === 3) {
+  grid3.innerHTML += card;
+}
+  });
+}
+
+// ---- Color Analysis ----
+function extractDominantColors(img) {
+  const canvas = document.createElement('canvas');
+  const size = 80; // sample size
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, size, size);
+  const data = ctx.getImageData(0, 0, size, size).data;
+
+  // Collect color buckets
+  const buckets = {};
+  for (let i = 0; i < data.length; i += 16) { // sample every 4th pixel
+    const r = Math.round(data[i] / 32) * 32;
+    const g = Math.round(data[i+1] / 32) * 32;
+    const b = Math.round(data[i+2] / 32) * 32;
+    const key = `${r},${g},${b}`;
+    buckets[key] = (buckets[key] || 0) + 1;
+  }
+
+  // Sort by frequency, return top 5 colors
+  const sorted = Object.entries(buckets).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  return sorted.map(([key]) => {
+    const [r, g, b] = key.split(',').map(Number);
+    return { r, g, b };
+  });
+}
+
+function parseGradientColors(gradient) {
+  const matches = gradient.match(/#[0-9A-Fa-f]{6}/g) || [];
+  return matches.map(hex => {
+    const r = parseInt(hex.slice(1,3), 16);
+    const g = parseInt(hex.slice(3,5), 16);
+    const b = parseInt(hex.slice(5,7), 16);
+    return { r, g, b };
+  });
+}
+
+function colorDistance(c1, c2) {
+  return Math.sqrt((c1.r-c2.r)**2 + (c1.g-c2.g)**2 + (c1.b-c2.b)**2);
+}
+
+function scoreDress(dress, photoColors) {
+  const dressColors = parseGradientColors(dress.gradient);
+  if (dressColors.length === 0) return 999;
+  let totalScore = 0;
+  // For each dress color, find closest match in photo
+  for (const dc of dressColors) {
+    let minDist = Infinity;
+    for (const pc of photoColors) {
+      const dist = colorDistance(dc, pc);
+      if (dist < minDist) minDist = dist;
+    }
+    totalScore += minDist;
+  }
+  // Also consider complementary colors (opposite on color wheel)
+  for (const pc of photoColors) {
+    const comp = { r: 255 - pc.r, g: 255 - pc.g, b: 255 - pc.b };
+    for (const dc of dressColors) {
+      const dist = colorDistance(dc, comp);
+      if (dist < 80) totalScore -= 30; // bonus for complementary
+    }
+  }
+  return totalScore / dressColors.length;
+}
+
+function getSuggestedDresses(photoColors) {
+  const scored = dresses.map(d => ({
+    ...d,
+    score: scoreDress(d, photoColors)
+  }));
+  scored.sort((a, b) => a.score - b.score);
+  return scored;
+}
+
+// ---- Enter try-on mode ----
+function enterTryonMode() {
+  mirrorUploadStage.classList.add('hidden');
+  mirrorTryonStage.classList.add('active');
+
+  // Show analyzing animation
+  const analyzing = document.getElementById('mirrorAnalyzing');
+  analyzing.classList.remove('hidden');
+  mirrorGradientWash.style.display = 'none';
+  mirrorBodyDress.style.display = 'none';
+  document.getElementById('mirrorWearingLabel').style.display = 'none';
+  document.getElementById('mirrorSideInfo').style.display = 'none';
+  document.getElementById('mirrorReco').style.display = 'none';
+
+  setTimeout(() => {
+    // Extract colors
+    const photoColors = extractDominantColors(mirrorUserPhoto);
+    const ranked = getSuggestedDresses(photoColors);
+    mirrorSuggestedIds = ranked.slice(0, 4).map(d => d.id);
+
+    analyzing.classList.add('hidden');
+
+    // Show dress overlay + info
+    mirrorGradientWash.style.display = 'block';
+    mirrorBodyDress.style.display = 'flex';
+    document.getElementById('mirrorWearingLabel').style.display = 'block';
+    document.getElementById('mirrorSideInfo').style.display = 'flex';
+    document.getElementById('mirrorReco').style.display = 'block';
+
+    // Show top match first
+    const topDress = ranked[0];
+    mirrorCurrentDress = dresses.findIndex(d => d.id === topDress.id);
+    showMirrorDress(mirrorCurrentDress);
+
+    // Build recommendation cards
+    mirrorShowAll = false;
+    document.getElementById('mirrorRecoToggle').textContent = 'Show All';
+    buildRecoCards(ranked, false);
+  }, 1200);
+}
+
+function buildRecoCards(rankedDresses, showAll) {
+  mirrorRecoGrid.innerHTML = '';
+  const toShow = showAll ? rankedDresses : rankedDresses.slice(0, 4);
+  const suggestedSet = new Set(mirrorSuggestedIds);
+
+  toShow.forEach((d, i) => {
+    const isSuggested = suggestedSet.has(d.id);
+    const isActive = dresses[mirrorCurrentDress] && dresses[mirrorCurrentDress].id === d.id;
+    const matchPct = Math.max(98 - Math.round(d.score / 3), 60);
+
+    const card = document.createElement('div');
+    card.className = 'mirror-reco-card' + (isActive ? ' active' : '');
+    card.dataset.dressId = d.id;
+    card.innerHTML = `
+      <div class="mirror-reco-card__visual">
+       <img src="${d.image}"
+            alt="${d.name}"
+            style="width:100%;height:100%;object-fit:cover;display:block;">
+
+        ${isSuggested ? `<div class="mirror-reco-card__match">${matchPct}% match</div>` : ''}
+      </div>
+      <div class="mirror-reco-card__info">
+        <div class="mirror-reco-card__name">${d.name}</div>
+        <div class="mirror-reco-card__cat">${d.category}</div>
+        <div class="mirror-reco-card__price"><span class="currency">₹</span>${d.price.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="mirror-reco-card__try">Try On</div>
+    `;
+    card.addEventListener('click', () => {
+      const idx = dresses.findIndex(dr => dr.id === d.id);
+      showMirrorDress(idx);
+      // Update active states
+      mirrorRecoGrid.querySelectorAll('.mirror-reco-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+    });
+    mirrorRecoGrid.appendChild(card);
+  });
+
+  // Update title
+  if (showAll) {
+    document.getElementById('mirrorRecoTitle').textContent = 'All Collection';
+    document.getElementById('mirrorRecoHint').textContent = 'Tap any dress to try it on';
+  } else {
+    document.getElementById('mirrorRecoTitle').textContent = 'Recommended for You';
+    document.getElementById('mirrorRecoHint').textContent = 'Based on your photo\'s color palette';
+  }
+}
+
+// Toggle show all
+document.getElementById('mirrorRecoToggle').addEventListener('click', () => {
+  mirrorShowAll = !mirrorShowAll;
+  const photoColors = extractDominantColors(mirrorUserPhoto);
+  const ranked = getSuggestedDresses(photoColors);
+  buildRecoCards(ranked, mirrorShowAll);
+  document.getElementById('mirrorRecoToggle').textContent = mirrorShowAll ? 'Show Suggested' : 'Show All';
+});
+
+function showMirrorDress(index) {
+  mirrorCurrentDress = index;
+  const d = dresses[index];
+
+  // Gradient wash (full overlay, color blend mode)
+  mirrorGradientWash.style.background = d.gradient;
+
+  // Body-fit dress silhouette
+  mirrorBodyDress.style.background = d.gradient;
+  mirrorBodyDress.style.borderRadius = '40% 40% 35% 35%';
+  mirrorBodyDress.style.maskImage = 'radial-gradient(ellipse 90% 95% at 50% 45%, black 60%, transparent 100%)';
+  mirrorBodyDress.style.webkitMaskImage = 'radial-gradient(ellipse 90% 95% at 50% 45%, black 60%, transparent 100%)';
+  mirrorBodyDress.innerHTML = dressSVG;
+
+  // Wearing label
+  document.getElementById('mirrorWearingLabel').textContent = d.name;
+
+  // Side info
+  document.getElementById('mirrorSideBadge').textContent = d.badge;
+  document.getElementById('mirrorSideName').textContent = d.name;
+  document.getElementById('mirrorSideCat').textContent = d.category;
+  document.getElementById('mirrorSidePrice').textContent = '₹' + d.price.toLocaleString('en-IN');
+  document.getElementById('mirrorSideDetail').textContent = d.detail;
+
+  // Update active card in grid
+  mirrorRecoGrid.querySelectorAll('.mirror-reco-card').forEach(card => {
+    card.classList.toggle('active', card.dataset.dressId == d.id);
+  });
+}
+
+// Add to cart from mirror
+document.getElementById('mirrorAddBtn').addEventListener('click', () => {
+  const d = dresses[mirrorCurrentDress];
+  addToCart(d.id);
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (!mirrorOverlay.classList.contains('open')) return;
+  if (e.key === 'Escape') closeMirror();
+  if (e.key === 'ArrowLeft') showMirrorDress((mirrorCurrentDress - 1 + dresses.length) % dresses.length);
+  if (e.key === 'ArrowRight') showMirrorDress((mirrorCurrentDress + 1) % dresses.length);
+});
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+<!-- ADMIN PANEL -->
+ <div id="dressContainer"></div>
+<div id="adminPanel" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#071e2c; z-index:9999; padding:2rem; overflow:auto;">
+  <h2 style="color:white;">Admin Panel - Add Product</h2>
+
+  <input id="pName" placeholder="Product Name"><br><br>
+  <input id="pPrice" placeholder="Price"><br><br>
+  <input id="pCategory" placeholder="Category"><br><br>
+
+  <textarea id="pDetail" placeholder="Product Description"></textarea><br><br>
+
+  <input id="pBadge" placeholder="Badge"><br><br>
+
+<select id="pCollection">
+  <option value="1">Collection 01</option>
+  <option value="2">Collection 02</option>
+  <option value="3">Collection 03</option>
+</select><br><br>
+
+  <input type="file" id="pImage"><br><br>
+
+  <button onclick="addProduct()">Add Product</button>
+  <button onclick="closeAdmin()">Close</button>
+</div>
+
+</body>
+</html>
+<script>
+
+function openAdmin() {
+  document.getElementById("adminPanel").style.display = "block";
+}
+
+function closeAdmin() {
+  document.getElementById("adminPanel").style.display = "none";
+}
+function addProduct() {
+  const name = document.getElementById("pName").value;
+  const price = document.getElementById("pPrice").value;
+  const category = document.getElementById("pCategory").value;
+  const collection = parseInt(document.getElementById("pCollection").value);
+  const detail = document.getElementById("pDetail").value;
+  const file = document.getElementById("pImage").files[0];
+  const badge = document.getElementById("pBadge").value;
+  
+  if (!file) {
+    alert("Please upload image");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const newDress = {
+      id: dresses.length + 1,
+      name: name,
+      price: parseInt(price),
+      category: category,
+      image: e.target.result, // 🔥 THIS FIXES IMAGE
+      detail: detail,
+      gradient: "linear-gradient(135deg, #8B1A1A, #CD853F, #DAA520)",
+      badge: badge,
+      collection: collection
+    };
+
+    dresses.push(newDress);
+
+   localStorage.setItem("coastalAuraProducts",JSON.stringify(dresses));
+
+    renderDresses(); // refresh UI
+    closeAdmin();
+    alert("Product Added!");
+  };
+
+  reader.readAsDataURL(file);
+}
+function addDress(){
+ const newDress={
+   id:Date.now(),
+   name:document.getElementById("dressName").value,
+   category:document.getElementById("dressCategory").value,
+   price:Number(document.getElementById("dressPrice").value),
+   badge:document.getElementById("dressBadge").value,
+   detail:document.getElementById("dressDetail").value,
+   gradient:document.getElementById("dressGradient").value,
+   collection:Number(document.getElementById("dressCollection").value)
+ };
+}
+</script>
